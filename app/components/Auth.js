@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react-native');
-var Reflux = require('reflux');
-var actions = require('../actions.js');
-var AuthStore = require('../stores/AuthStore');
+const React = require('react-native');
+const Reflux = require('reflux');
+const actions = require('../actions.js');
+const AuthStore = require('../stores/AuthStore');
 
-var {
+const {
   StyleSheet,
   Text,
   TextInput,
@@ -13,8 +13,7 @@ var {
   View,
 } = React;
 
-
-var Auth = React.createClass({
+const Auth = React.createClass({
   mixins: [Reflux.ListenerMixin],
   getInitialState: function() {
     return { email: '', password: '', errMessage: 'default', showLogin: true, placeholderTextColor: 'rgba(225, 225, 225, .6)' };
@@ -40,8 +39,8 @@ var Auth = React.createClass({
   onFormValid: function() {
     this.state.showLogin ? actions.login(this.state) : actions.signup(this.state);    
   },
-  onFormInvalid: function() {
-    this.setState({ errMessage: 'invalid credentials' });
+  onFormInvalid: function(errMessage) {
+    this.setState({ errMessage: errMessage });
   },
   onLoginSuccess: function(user) {
     console.log("on login success", user);
@@ -50,6 +49,7 @@ var Auth = React.createClass({
     this.setState({ errMessage: errMessage });
   },
   onSignupSuccess: function(user) {
+    actions.changeScene('/dashboard', user);
     console.log("on signup success", user);
   },
   onSignupError: function(errMessage) {
@@ -62,6 +62,7 @@ var Auth = React.createClass({
     return (
     
       <View style={styles.container}>
+         
 
         { /* Logo Copy */ }
         <Text style={styles.logo}>task drop</Text>

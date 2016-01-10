@@ -16,7 +16,7 @@ module.exports = Reflux.createStore({
   onValidateForm: function() {
     var email = arguments[0].email;
     var password = arguments[0].password;
-    this.isValidEmail(email.trim()) && this.isValidPassword(password.trim()) ? this.trigger({}, 'onFormValid'): this.trigger({}, 'onFormInvalid');
+    this.isValidEmail(email.trim()) && this.isValidPassword(password.trim()) ? this.trigger({}, 'onFormValid'): this.trigger('invalid credentials', 'onFormInvalid');
   },
   login: function() {
     var opts = {};
@@ -33,7 +33,13 @@ module.exports = Reflux.createStore({
     opts.email = arguments[0].email;
     opts.password = arguments[0].password;
     Api.post(opts, function(results) {
-     results.message ? this.trigger(results.message, 'onSignupError') : this.trigger(results.user, 'onSignupSuccess');      
+     results.message ? this.trigger(results.message, 'onSignupError') : this.trigger(results, 'onSignupSuccess');      
     }.bind(this));
+  },
+  changeScene: function() {
+    var opts = {};
+    opts.scene = arguments[0];
+    opts.user = arguments[1];
+    this.trigger(opts, 'changeScene');
   }
 });

@@ -9,6 +9,7 @@
   "dependencies": {
     "react": "^0.14.6",
     "react-native": "^0.17.0",
-    "reflux": "^0.2.7"
+    "reflux": "^0.2.7",
+    "scene-router": "^0.3.2"
   }
 }
