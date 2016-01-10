@@ -1,5 +1,8 @@
 var Reflux = require('reflux');
 var actions = require('../actions');
+var Api = require('../api');
+
+const devBase = 'http://localhost:3000';
 
 module.exports = Reflux.createStore({
   listenables: [actions],
@@ -9,12 +12,30 @@ module.exports = Reflux.createStore({
   },
   isValidPassword: function(password) {
     return password.length >= 5;
-  },  
+  },
   onValidateForm: function() {
 
     var email = arguments[0].email;
     var password = arguments[0].password;
-    
-    (this.isValidEmail(email) && this.isValidPassword(password)) ? this.trigger({}, 'onFormValid') : this.trigger({}, 'onFormInvalid');
+
+    (this.isValidEmail(email.trim()) && this.isValidPassword(password.trim())) ? this.trigger({}, 'onFormValid'): this.trigger({}, 'onFormInvalid');
+  },
+  login: function() {
+    var opts = {};
+    opts.url = devBase + '/login';    
+    opts.email = arguments[0].email;
+    opts.password = arguments[0].password;
+    Api.post(opts, function(user) {
+      console.log('user logged in', user);
+    });
+  },
+  signup: function() {
+    var opts = {};
+    opts.url = devBase + '/signup';    
+    opts.email = arguments[0].email;
+    opts.password = arguments[0].password;
+    Api.post(opts, function(user) {
+      console.log('user created', user);
+    });
   }
 });

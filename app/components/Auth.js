@@ -17,7 +17,7 @@ var {
 var Auth = React.createClass({
   mixins: [Reflux.ListenerMixin],
   getInitialState: function() {
-    return { email: '', password: '', placeholderTextColor: 'rgba(225, 225, 225, .6)' };
+    return { email: '', password: '', showLogin: true, placeholderTextColor: 'rgba(225, 225, 225, .6)' };
   },
   componentDidMount: function() {
     this.listenTo(AuthStore, this.handleChange);
@@ -31,17 +31,23 @@ var Auth = React.createClass({
   setPassword: function(password) {
     this.setState({ password: password });
   },
+  toggleOpts: function() {
+    this.setState({ showLogin: !this.state.showLogin });
+  },
   onSubmitForm: function() {
     actions.validateForm(this.state);
   },
   onFormValid: function() {
-    console.log('form valid', this.state);
+    this.state.showLogin ? actions.login(this.state) : actions.signup(this.state);    
   },
   onFormInvalid: function() {
     console.log('form invalid', this.state);
   },
   render: function() {
+    var buttonCopy = (this.state.showLogin) ? <Text style={styles.loginBtnCopy}>LOGIN</Text> : <Text style={styles.loginBtnCopy}>SIGNUP</Text>
+    var optsCopy = (this.state.showLogin) ? <Text style={styles.optsCopy}>need an account?</Text> : <Text style={styles.optsCopy}>have an account?</Text>
     return (
+    
       <View style={styles.container}>
 
         { /* Logo Copy */ }
@@ -70,14 +76,16 @@ var Auth = React.createClass({
 
           { /* Login Btn */ }
           <TouchableOpacity onPress={this.onSubmitForm}>
-            <View style={styles.loginBtn}>
-              <Text style={styles.loginBtnCopy}>LOGIN</Text>
+            <View style={styles.button}>
+              { buttonCopy }
             </View>
           </TouchableOpacity>            
 
           { /* Need An Acct */ }
-          <Text style={styles.needAcct}>need an account?</Text>
-        
+          <TouchableOpacity onPress={this.toggleOpts}> 
+            { optsCopy }
+          </TouchableOpacity>            
+
         </View>      
       </View>
     
@@ -126,7 +134,7 @@ var styles = StyleSheet.create({
   secondLine: {
     marginBottom: 30
   },
-  loginBtn: {
+  button: {
     alignSelf: 'center',
     justifyContent: 'center', 
     width: 200,
@@ -140,7 +148,7 @@ var styles = StyleSheet.create({
     color: 'white',
     letterSpacing: 2
   },
-  needAcct: {
+  optsCopy: {
     fontFamily: 'Avenir-Light',
     alignSelf: 'center',  
     color: 'rgba(225, 225, 225, .9)',
