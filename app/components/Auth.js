@@ -17,7 +17,7 @@ var {
 var Auth = React.createClass({
   mixins: [Reflux.ListenerMixin],
   getInitialState: function() {
-    return { email: '', password: '', showLogin: true, placeholderTextColor: 'rgba(225, 225, 225, .6)' };
+    return { email: '', password: '', errMessage: 'default', showLogin: true, placeholderTextColor: 'rgba(225, 225, 225, .6)' };
   },
   componentDidMount: function() {
     this.listenTo(AuthStore, this.handleChange);
@@ -41,11 +41,24 @@ var Auth = React.createClass({
     this.state.showLogin ? actions.login(this.state) : actions.signup(this.state);    
   },
   onFormInvalid: function() {
-    console.log('form invalid', this.state);
+    this.setState({ errMessage: 'invalid credentials' });
+  },
+  onLoginSuccess: function(user) {
+    console.log("on login success", user);
+  },
+  onLoginError: function(errMessage) {
+    this.setState({ errMessage: errMessage });
+  },
+  onSignupSuccess: function(user) {
+    console.log("on signup success", user);
+  },
+  onSignupError: function(errMessage) {
+    this.setState({ errMessage: errMessage });
   },
   render: function() {
     var buttonCopy = (this.state.showLogin) ? <Text style={styles.loginBtnCopy}>LOGIN</Text> : <Text style={styles.loginBtnCopy}>SIGNUP</Text>
     var optsCopy = (this.state.showLogin) ? <Text style={styles.optsCopy}>need an account?</Text> : <Text style={styles.optsCopy}>have an account?</Text>
+    var toolTipStyle = (this.state.errMessage !== 'default') ? styles.toolTip : [styles.toolTip, styles.removeOpacity];
     return (
     
       <View style={styles.container}>
@@ -85,8 +98,14 @@ var Auth = React.createClass({
           <TouchableOpacity onPress={this.toggleOpts}> 
             { optsCopy }
           </TouchableOpacity>            
-
+        
+        { /* Error Message */ }
+        <View style={ toolTipStyle }>
+          <Text style={ styles.errMessage }>{this.state.errMessage.toUpperCase()}</Text>   
+        </View>
+        
         </View>      
+     
       </View>
     
     )
@@ -108,7 +127,7 @@ var styles = StyleSheet.create({
   },
   formContainer: {
     flexDirection: 'column',    
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     width: 500,
     marginBottom: 30,
     backgroundColor: 'transparent'
@@ -153,6 +172,23 @@ var styles = StyleSheet.create({
     alignSelf: 'center',  
     color: 'rgba(225, 225, 225, .9)',
     marginTop: 15
+  },
+  toolTip: {
+    justifyContent: 'center',    
+    marginTop: 15,    
+    height: 40,
+    backgroundColor: '#4b3f42'
+  },
+  errMessage: {
+    fontFamily: 'Avenir-Light',
+    alignSelf: 'center',
+    color: '#FFD3D3'
+  },
+  removeOpacity: {
+    opacity: 0
+  },
+  addOpacity: {
+    opacity: 1
   }
 });
 

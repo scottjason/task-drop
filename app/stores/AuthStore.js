@@ -14,28 +14,26 @@ module.exports = Reflux.createStore({
     return password.length >= 5;
   },
   onValidateForm: function() {
-
     var email = arguments[0].email;
     var password = arguments[0].password;
-
-    (this.isValidEmail(email.trim()) && this.isValidPassword(password.trim())) ? this.trigger({}, 'onFormValid'): this.trigger({}, 'onFormInvalid');
+    this.isValidEmail(email.trim()) && this.isValidPassword(password.trim()) ? this.trigger({}, 'onFormValid'): this.trigger({}, 'onFormInvalid');
   },
   login: function() {
     var opts = {};
-    opts.url = devBase + '/login';    
+    opts.url = devBase + '/login';
     opts.email = arguments[0].email;
     opts.password = arguments[0].password;
-    Api.post(opts, function(user) {
-      console.log('user logged in', user);
-    });
+    Api.post(opts, function(results) {
+     results.message ? this.trigger(results.message, 'onLoginError') : this.trigger(results.user, 'onLoginSuccess');
+    }.bind(this));
   },
   signup: function() {
     var opts = {};
-    opts.url = devBase + '/signup';    
+    opts.url = devBase + '/signup';
     opts.email = arguments[0].email;
     opts.password = arguments[0].password;
-    Api.post(opts, function(user) {
-      console.log('user created', user);
-    });
+    Api.post(opts, function(results) {
+     results.message ? this.trigger(results.message, 'onSignupError') : this.trigger(results.user, 'onSignupSuccess');      
+    }.bind(this));
   }
 });
