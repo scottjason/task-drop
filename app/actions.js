@@ -1,6 +1,4 @@
-var Reflux = require('reflux');
-
-module.exports = Reflux.createActions({
+module.exports = require('reflux').createActions({
   validateForm: {},
   login: {},
   signup: {},

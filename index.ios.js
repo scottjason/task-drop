@@ -30,7 +30,7 @@ const taskDrop = React.createClass({
     if (typeof this[cb] === 'function') this[cb](data);
   },
   changeScene(data) {
-    this.scene.goto(data.scene, { user: data.user }, { duration: 350 });
+    this.scene.goto(data.scene, { user: data.user }, { duration: 250 });
   },
   render() {
   
@@ -42,7 +42,7 @@ const taskDrop = React.createClass({
     };
 
     return (
-      <Scene ref="sceneRef" initialPath="/auth" cameraProps={cameraProps}  onSceneChange={({position, path}) => {
+      <Scene ref="sceneRef" initialPath="/auth" cameraProps={cameraProps}  onSceneChange={({ position, path }) => {
         console.log(position, path);
       }}>
         <Scene path="auth" component={Auth}/>
